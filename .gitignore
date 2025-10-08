@@ -205,3 +205,8 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Ignore large dataset zips
+# Ignore local dataset zip
+data/via_cervix.zip
+notebooks/artifacts/
