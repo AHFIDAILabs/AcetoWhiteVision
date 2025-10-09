@@ -1,0 +1,17 @@
+# render.yaml
+# This file configures the deployment of the Acetowhite-Vision application on Render.
+# For more details, see https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: acetowhite-vision
+    env: python
+    # A unique name for your service. Render generates one if not provided.
+    
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    
+    # Command to start the web server
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    
+    healthCheckPath: "/"
