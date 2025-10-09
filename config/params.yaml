@@ -1,0 +1,61 @@
+#This file defines the hyperparameters and other tunable parameters for the model.
+# Separating parameters makes it easy to experiment with different settings without changing the code.
+
+# Parameters for the SSL Model and Training Pipeline
+
+# Model Architecture
+MODEL_NAME: "efficientnet_b3"
+NUM_CLASSES: 2 # Binary classification: Negative, Positive. # For binary classification with BCEWithLogitsLoss, the model should have a single output neuron.
+CLASSES: 2  # <-- Added for compatibility with configuration.py
+PRETRAINED: true # Whether to use pre-trained weights
+
+# Base model configuration for transfer learning
+INCLUDE_TOP: False
+WEIGHTS: "imagenet"
+LEARNING_RATE: 0.001
+
+# Image Preprocessing
+IMAGE_SIZE: [224, 224, 3]
+
+# Semi-Supervised Training Parameters
+EPOCHS: 25
+BATCH_SIZE: 16
+CONSISTENCY_WEIGHT: 1.0  # Weight for the consistency loss in the SSL objective
+PSEUDO_LABEL_THRESHOLD: 0.8  # The threshold for creating pseudo-labels
+AUGMENTATION: True
+
+# High Sensitivity Fine-Tuning
+HS_EPOCHS: 10
+HS_LEARNING_RATE: 0.0001
+INFERENCE_THRESHOLD: 0.3 # The prediction threshold for inference to maximize sensitivity
+
+
+# # Parameters for the PyTorch Semi-Supervised Learning (SSL) Pipeline
+
+# # Model Architecture
+# MODEL_NAME: "efficientnet_b3"
+# PRETRAINED: True
+# # For binary classification with BCEWithLogitsLoss, the model should have a single output.
+# NUM_CLASSES: 1
+
+# # Image Preprocessing
+# IMAGE_SIZE: [224, 224, 3] # (height, width, channels)
+# AUGMENTATION: True
+
+# # Stage 1: Semi-Supervised Training
+# EPOCHS: 25
+# BATCH_SIZE: 16
+# LEARNING_RATE: 0.001
+# # The weight of the consistency loss for unlabeled data in the total loss function.
+# CONSISTENCY_WEIGHT: 1.0
+# # The confidence threshold for generating pseudo-labels for unlabeled data.
+# PSEUDO_LABEL_THRESHOLD: 0.8
+
+# # Stage 2: High-Sensitivity Fine-Tuning
+# HS_EPOCHS: 10
+# HS_LEARNING_RATE: 0.0001
+
+# # Stage 3: Inference
+# # The threshold used to classify a prediction as "Positive".
+# # A lower value increases sensitivity (reduces false negatives).
+# INFERENCE_THRESHOLD: 0.3

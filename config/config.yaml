@@ -1,0 +1,34 @@
+# This file defines the directory structure and file paths for the project.
+# It ensures that all components know where to read data from and where to save artifacts.
+
+# Configuration for the entire MLOps pipeline
+
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/data_ingestion
+  # The CORRECT Google Drive File ID for the cervix-via.zip
+  gdrive_id: "1zyJ6bS4RfewXzPIQgPV3dX2JkNPaUGpz"
+  # The local path where the downloaded zip file will be saved
+  local_archive_file: artifacts/data_ingestion/cervix-via.zip
+  # The directory where the zip file will be extracted
+  unzip_dir: artifacts/data_ingestion/
+  # The final, clean directory for the prepared data
+  final_data_dir: artifacts/data
+
+prepare_base_model:
+  root_dir: artifacts/prepare_base_model
+  base_model_path: artifacts/prepare_base_model/base_model.h5
+  updated_base_model_path: artifacts/prepare_base_model/base_model_updated.h5
+
+training:
+  root_dir: artifacts/training
+  trained_model_path: artifacts/training/model.h5
+  # The training process will use the final structured data
+  training_data: artifacts/data
+
+evaluation:
+  path_of_model: artifacts/training/model.h5
+  training_data: artifacts/data
+  all_params: params.yaml
+  # MLflow has been removed
