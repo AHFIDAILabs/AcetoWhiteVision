@@ -152,9 +152,9 @@ Prerequisites:
 
 ### Step 1: Clone the Repository
 
-```
 git clone [https://github.com/AHFIDAILabs/Acetowhite_Vision.git](https://github.com/AHFIDAILabs/Acetowhite_Vision.git)
 
+```
 cd Acetowhite_Vision
 ```
 ### Step 2: Create and Activate a Virtual Environment
@@ -196,14 +196,14 @@ The pipeline is configured to download data from Google Drive. If this fails (e.
 
 There are two main ways to run this project:
 
-* a. Run the Full MLOps Training Pipeline
+a. Run the Full MLOps Training Pipeline
 This command will execute all the stages defined in main.py: Data Ingestion, Base Model Preparation, Model Training, and Evaluation.
 
 ```
 python main.py
 ```
 
-* b. Run the Web Application
+b. Run the Web Application
 This command starts the FastAPI server, allowing you to interact with the trained model via a web browser.
 
 ```
@@ -211,7 +211,7 @@ uvicorn app.main:app --reload
 ```
 Navigate to http://127.0.0.1:8000 in your web browser.
 
-* c. Run with Docker
+c. Run with Docker
 This is the recommended method for a stable, production-like deployment. It ensures the application runs in a clean, isolated environment.
 
     Step 1: Build the Docker Image
