@@ -1,8 +1,24 @@
+import sys
+from pathlib import Path
+
+# Add the 'src' directory to the Python path
+sys.path.append(str(Path(__file__).resolve().parent / "src"))
+
+import logging
 from Acetowhite_Vision.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
 from Acetowhite_Vision.pipeline.stage_02_prepare_base_model import PrepareBaseModelTrainingPipeline
 from Acetowhite_Vision.pipeline.stage_03_model_trainer import ModelTrainingPipeline
 from Acetowhite_Vision.pipeline.stage_04_model_evaluation import EvaluationPipeline
 from Acetowhite_Vision.utils.logger import logger
+
+# Configure logging first
+logging.basicConfig(
+    filename='logfile.log',
+    filemode='w',
+    encoding='utf-8',
+    level=logging.INFO,
+    format='%(asctime)s: %(levelname)s: %(message)s'
+)
 
 STAGE_NAME = "Data Ingestion stage"
 try:

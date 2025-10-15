@@ -1,4 +1,4 @@
-import gdown
+from huggingface_hub import hf_hub_download
 import zipfile
 import shutil
 from pathlib import Path
@@ -9,7 +9,7 @@ from Acetowhite_Vision.utils.logger import logger
 class DataIngestion:
     """
     Handles downloading and extraction of the dataset.
-    Falls back to a local zip file if Google Drive download fails.
+    Falls back to a local zip file if Hugging Face download fails.
     """
 
     def __init__(self, config: DataIngestionConfig):
@@ -19,29 +19,37 @@ class DataIngestion:
 
     def download_file(self) -> bool:
         """
-        Attempts to download dataset from Google Drive.
+        Attempts to download dataset from Hugging Face Hub.
         Returns True if successful, False otherwise.
         """
         try:
-            logger.info("Downloading data from Google Drive...")
+            logger.info("Downloading data from Hugging Face Hub...")
 
             self.config.local_archive_file.parent.mkdir(parents=True, exist_ok=True)
-            download_url = f"https://drive.google.com/uc?id={self.config.gdrive_id}"
 
-            gdown.download(
-                url=download_url,
-                output=str(self.config.local_archive_file),
-                quiet=False
+            # Expected that your config contains: hf_repo_id and hf_filename
+            repo_id = self.config.hf_repo_id
+            filename = self.config.hf_filename
+
+            downloaded_path = hf_hub_download(
+                repo_id=repo_id,
+                filename=filename,
+                local_dir=str(self.config.local_archive_file.parent),
+                local_dir_use_symlinks=False,
+                force_download=True
             )
 
+            # Move or rename to match expected archive name
+            Path(downloaded_path).rename(self.config.local_archive_file)
+
             if not self.config.local_archive_file.exists():
-                raise Exception("Download failed. Output file not found. Please check Google Drive permissions.")
+                raise FileNotFoundError("Download failed. File not found after Hugging Face download.")
 
             logger.info(f"Archive downloaded successfully to {self.config.local_archive_file.resolve()}")
             return True
 
         except Exception as e:
-            logger.error(f"Failed to download file from Google Drive. Error: {e}")
+            logger.error(f"Failed to download file from Hugging Face Hub. Error: {e}")
             return False
 
     def extract_and_organize(self, archive_file: Path):

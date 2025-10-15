@@ -7,14 +7,16 @@ artifacts_root: artifacts
 
 data_ingestion:
   root_dir: artifacts/data_ingestion
-  # The CORRECT Google Drive File ID for the cervix-via.zip
-  gdrive_id: "1zyJ6bS4RfewXzPIQgPV3dX2JkNPaUGpz"
+  # Hugging Face repository information
+  hf_repo_id: "AHFIDAILabs/via-cervix"
+  hf_filename: "via_cervix.zip"
   # The local path where the downloaded zip file will be saved
-  local_archive_file: artifacts/data_ingestion/cervix-via.zip
+  local_archive_file: artifacts/data_ingestion/via_cervix.zip
   # The directory where the zip file will be extracted
-  unzip_dir: artifacts/data_ingestion/
+  unzip_dir: artifacts/data_ingestion/unzipped
   # The final, clean directory for the prepared data
-  final_data_dir: artifacts/data
+  final_data_dir: artifacts/data/final
+
 
 prepare_base_model:
   root_dir: artifacts/prepare_base_model

@@ -1,6 +1,6 @@
 # requirements.txt
 # --find-links tells pip where to look for the PyTorch wheels
---find-links https://www.google.com/search?q=https://download.pytorch.org/whl/torch_stable.html
+--find-links https://download.pytorch.org/whl/torch_stable.html
 
 # Core ML Libraries (PyTorch)
 torch>=1.13.1
@@ -10,13 +10,14 @@ timm==0.9.12
 scikit-learn==1.4.1.post1
 
 # Data & Utilities
-gdown==4.6.4
+#gdown==4.6.4
+huggingface_hub
 numpy==1.26.4
 pandas==2.2.1
 matplotlib==3.7.1
 seaborn==0.13.2
 tqdm==4.66.2
-python-box==6.0.2
+python-box==6.0.2 
 PyYAML==6.0
 ensure==1.0.2
 opencv-python-headless==4.9.0.80

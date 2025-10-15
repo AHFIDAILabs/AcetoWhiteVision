@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-@dataclass(frozen=True)
+@dataclass
 class DataIngestionConfig:
     root_dir: Path
-    gdrive_id: str
+    hf_repo_id: str            # Hugging Face repo ID
+    hf_filename: str           # Filename to download from Hugging Face
     local_archive_file: Path
     unzip_dir: Path
     final_data_dir: Path

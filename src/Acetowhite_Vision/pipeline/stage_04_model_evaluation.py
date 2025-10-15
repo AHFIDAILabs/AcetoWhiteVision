@@ -30,7 +30,7 @@ class EvaluationPipeline:
         if all(p.exists() for p in expected_outputs):
             logger.info("All evaluation artifacts already exist, skipping evaluation stage.")
             for p in expected_outputs:
-                logger.info(f"✓ {p.resolve()}")
+                logger.info(f"[OK] {p.resolve()}")
         else:
             logger.info("Starting model evaluation...")
             evaluation.run_evaluation()

@@ -36,7 +36,8 @@ class ConfigurationManager:
         
         return DataIngestionConfig(
             root_dir=Path(config.root_dir),
-            gdrive_id=config.gdrive_id,  # <-- CORRECTED
+            hf_repo_id=config.hf_repo_id,  # Hugging Face repository ID
+            hf_filename=config.hf_filename,  # The filename to download
             local_archive_file=Path(config.local_archive_file),
             unzip_dir=Path(config.unzip_dir),
             final_data_dir=Path(config.final_data_dir)
