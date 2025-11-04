@@ -193,7 +193,7 @@ class PredictionPipeline:
             output = self.model(input_tensor)
             
             # Handle both binary classification approaches
-            if output.shape[1] == 1:
+            if output.shape[1] == 1: 
                 # Single output (binary)
                 prob = torch.sigmoid(output).item()
             else:
@@ -201,8 +201,14 @@ class PredictionPipeline:
                 probs = torch.softmax(output, dim=1)
                 prob = probs[0, 1].item()  # Probability of positive class
         
+        # Determine label
         prediction = "Positive" if prob > 0.5 else "Negative"
+        
+         # Compute base confidence
         confidence = prob if prediction == "Positive" else 1 - prob
+        
+        # Cap the confidence (e.g., max 0.95 and min 0.01)
+        confidence = max(min(confidence, 0.95), 0.01)
         
         return prediction, confidence, prob
     
@@ -273,50 +279,71 @@ class PredictionPipeline:
         uncertainty: str
     ) -> str:
         """
-        Generate a structured clinical report.
-        
-        Args:
-            prediction: Prediction label (Positive/Negative)
-            confidence: Confidence score
-            uncertainty: Uncertainty classification (High/Low)
-            
-        Returns:
-            Formatted clinical report string
+        Generate a structured clinical report with dynamic confidence and
+        uncertainty phrasing.
         """
+
+        # Interpret confidence in qualitative terms
+        if confidence >= 0.90:
+            confidence_text = "high confidence"
+        elif confidence >= 0.75:
+            confidence_text = "moderate confidence"
+        else:
+            confidence_text = "low confidence"
+
+        # Optional: integrate uncertainty phrasing
+        if uncertainty.lower() == "high":
+            uncertainty_text = "However, the model shows some uncertainty, and findings should be interpreted cautiously."
+        else:
+            uncertainty_text = "The model demonstrates consistent certainty in this prediction."
+
+        # Define tailored recommendations
+        recommendations = {
+            "Positive": (
+                "Immediate review by a qualified specialist is strongly recommended for potential treatment, such as colposcopy and biopsy, to confirm the diagnosis. The finding suggests the potential presence of acetowhite changes that warrant further investigation. If a precancerous lesion is identified and deemed suitable, cryotherapy or thermal ablation can be performed, often during the same visit. For suspected invasive cancer, immediate referral to a specialised facility for diagnosis and treatment is essential."
+            ),
+            "Negative": (
+                "Routine follow-up is advised. While the AI did not detect significant acetowhite features, this result should not replace a comprehensive clinical evaluation. Continued surveillance and adherence to local screening protocols are encouraged."
+            )
+        }
+
+        recommendation = recommendations.get(
+            prediction, 
+            "No recommendation available for this prediction."
+        )
+
+        # Compose final report
         report = f"""
-ACETOWHITE VISION AI - CLINICAL ANALYSIS REPORT
--------------------------------------------------
-Patient ID:      [Not Provided]
-Image Filename:  {self.filename.name}
-Date Analyzed:   {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
--------------------------------------------------
+    ACETOWHITE VISION AI - CLINICAL ANALYSIS REPORT
+    -------------------------------------------------
+    Patient ID:      [Not Provided]
+    Image Filename:  {self.filename.name}
+    Date Analyzed:   {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+    -------------------------------------------------
 
-FINDING:
-========
-The AI model predicts this case as: {prediction.upper()}
+    FINDING:
+    ========
+    The AI model predicts this case as: {prediction.upper()} with {confidence_text}.
+    {uncertainty_text}
 
-CONFIDENCE & UNCERTAINTY:
-=========================
-- Confidence in Prediction: {confidence:.2%}
-- Model Uncertainty Level:  {uncertainty.upper()}
+    CONFIDENCE & UNCERTAINTY:
+    =========================
+    - Confidence in Prediction: {confidence:.2%}
+    - Model Uncertainty Level:  {uncertainty.upper()}
 
-RECOMMENDATION:
-===============
-- If POSITIVE: Immediate review by a qualified colposcopist is strongly 
-  recommended. This finding suggests the potential presence of acetowhite 
-  changes that warrant further investigation.
-  
-- If NEGATIVE: Routine follow-up is advised. While the AI did not detect 
-  significant features, this result does not replace a comprehensive 
-  clinical evaluation.
+    RECOMMENDATION:
+    ===============
+    {recommendation}
 
-DISCLAIMER:
-===========
-This is an AI-generated report for screening purposes only. It is not a 
-diagnosis. All findings must be correlated with clinical history and 
-confirmed by a qualified medical professional.
+    DISCLAIMER:
+    ===========
+    This is an AI-generated report for screening purposes only. It is not a 
+    diagnosis. All findings must be correlated with clinical history and 
+    confirmed by a qualified medical professional.
         """
+
         return report.strip()
+
     
     def predict_with_explanation(self) -> Dict:
         """
